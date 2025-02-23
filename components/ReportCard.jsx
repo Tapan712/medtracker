@@ -1,11 +1,13 @@
 import { View, Text, Image, StyleSheet } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import Colors from "../constant/Colors";
 import { FontAwesome, MaterialIcons} from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
+import { SelectMedContext } from "./AppContext";
 
 export default function ReportCard({ medicine }) {
+  const {selectedMed,setSelectedMed} = useContext(SelectMedContext);
   const router = useRouter();
   let nm = medicine?.item?.type;
   const imgs =
@@ -50,7 +52,10 @@ export default function ReportCard({ medicine }) {
         </View>
       </View>
       <TouchableOpacity
-      onPress={()=>router.push('/med-report')}
+      onPress={()=>{
+        setSelectedMed(medicine?.item?.mId);
+        router.push('/med-report')
+      }}
       >
       <View style={styles.reminderContainer}>
         <MaterialIcons name="file-open" size={24} color={Colors.PRIMARY} />

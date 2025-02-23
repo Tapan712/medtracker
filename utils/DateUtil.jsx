@@ -35,3 +35,10 @@ export const timeConverter = (inptime) => {
     return h + ":" + minute + "PM";
   }
 };
+
+export const dateBetn = (fromDate ,toDate ,fromTime,toTime,targetDate )=>{
+  let from = moment(fromDate+" "+fromTime+":00","MM-DD-YYYY HH:mm:ss");
+  let to = moment(toDate+" "+toTime+":00","MM-DD-YYYY HH:mm:ss");
+  let target = moment(targetDate,"MM-DD-YYYY").isSame(moment(),'day')?moment():moment(targetDate+" 00:00:00","MM-DD-YYYY HH:mm:ss");
+  return target.isBetween(from, to, undefined, '[]');
+};

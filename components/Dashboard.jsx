@@ -1,29 +1,40 @@
 import { View, Text, Image, FlatList, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Colors from "../constant/Colors";
 import { TouchableOpacity } from "react-native";
 import { dateRange } from "../utils/DateUtil";
 import moment from "moment";
-import { medListMock } from './../constant/MockData'
 import MedCard from "./MedCard";
+import { MedListContext } from "./AppContext";
+import{medListMock} from "../constant/MockData"
+import { filterMedByDate } from "../utils/MedUtils";
+import EmptyState from "./EmptyState"
 
 export default function Dashboard() {
-  const [medList, setMedList] = useState();
+  const {medList, setMedList} = useContext(MedListContext);
+  const[filteredMeds,setFilteredMeds] = useState([]);
   const [dates, setDates] = useState();
   const [selectedDates, setSelectedDates] = useState(
     moment().format("MM/DD/YYYY")
   );
-
   useEffect(() => {
     dateRangeList();
+    setMedList(medListMock);
+    
   }, []);
+
+  useEffect(()=>{
+    fetchMeds();
+  },[selectedDates])
 
   const dateRangeList = () => {
     setDates(dateRange());
   };
-  const getMedications=(selectedDates)=>{
-    
-  }
+  const fetchMeds = () =>{
+    filterMedByDate(medListMock,selectedDates);
+    setFilteredMeds(filterMedByDate(medListMock,selectedDates));
+  };
+  
   return (
     <View>
         {/* Header image */}
@@ -81,12 +92,12 @@ export default function Dashboard() {
       />
       </View>
       {/* Medicine List */}
-      <FlatList
-      data={medListMock}
+      {filteredMeds!=null ? <FlatList
+      data={filteredMeds}
       renderItem={(item,index)=>(
         <MedCard medicine={item}/>
       )}
-      />
+      />: <EmptyState/>}
     </View>
   );
 }

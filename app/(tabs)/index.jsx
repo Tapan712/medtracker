@@ -1,6 +1,5 @@
 import { View, Text, FlatList } from 'react-native'
 import React from 'react'
-import EmptyState from '../../components/EmptyState'
 import Dashboard from '../../components/Dashboard'
 
 export default function HomeScreen() {
