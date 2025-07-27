@@ -19,20 +19,17 @@ export default function Dashboard() {
   );
   useEffect(() => {
     dateRangeList();
-    setMedList(medListMock);
-    
   }, []);
 
   useEffect(()=>{
     fetchMeds();
-  },[selectedDates])
+  },[selectedDates,medList])
 
   const dateRangeList = () => {
     setDates(dateRange());
   };
   const fetchMeds = () =>{
-    filterMedByDate(medListMock,selectedDates);
-    setFilteredMeds(filterMedByDate(medListMock,selectedDates));
+    setFilteredMeds(filterMedByDate(medList,selectedDates));
   };
   
   return (

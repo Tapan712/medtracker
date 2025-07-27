@@ -4,6 +4,7 @@ import { TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 
 export default function ReportHeader({ medicine }) {
+  console.log(medicine);
   const router = useRouter();
   let nm = medicine?.type;
   const imgs =

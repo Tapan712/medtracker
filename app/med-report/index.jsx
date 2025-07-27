@@ -1,13 +1,20 @@
 import { FlatList, View  } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import ReportHeader from '../../components/report-med/ReportHeader'
-import { doseStatus } from '../../constant/MockData'
 import ReportBody from '../../components/report-med/ReportBody'
-import { MedListContext, SelectMedContext } from '../../components/AppContext'
+import { DoseListContext,MedListContext, SelectMedContext } from '../../components/AppContext'
+import { use } from 'react'
 
 export default function MedicationReport() {
    const {selectedMed,setSelectedMed} = useContext(SelectMedContext);
    const {medList, setMedList} = useContext(MedListContext);
+   const {doseList, setDoseList} = useContext(DoseListContext);
+
+   useEffect(() => {
+    console.log("medList:", medList);
+    console.log("doseList:", doseList);
+   },[]);
+
   return (
     <FlatList
     data={[]}
@@ -18,7 +25,7 @@ export default function MedicationReport() {
     }}>
       <ReportHeader medicine={medList[selectedMed-1]}/>
       <FlatList
-      data={doseStatus}
+      data={doseList}
       renderItem={(item,index)=>(
         <ReportBody dose={item?.item}/>
       )}

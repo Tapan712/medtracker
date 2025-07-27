@@ -8,4 +8,7 @@ export default{
     lblDose:'Dose :Ex. 2, 5ml',
     lblTimesPerDay:'Times Per Day',
     lblCourseDuration:'Course Duration In Days',
+    fillAllFields:'Please fill all fields',
+    medAddedSuccess:'Medication added successfully',
+    medAddError:'Error adding medication',
 }

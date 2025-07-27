@@ -1,10 +1,11 @@
 import { View, FlatList } from 'react-native'
-import React from 'react'
-import { medListMock } from '../../constant/MockData'
+import React, { useContext } from 'react'
 import ReportCard from '../../components/ReportCard'
+import { MedListContext } from '../../components/AppContext';
 
 
 export default function Report() {
+  const {medList, setMedList} = useContext(MedListContext);
   return (
     <FlatList
     data={[]}
@@ -16,7 +17,7 @@ export default function Report() {
     }}>
     {/* Medicine List */}
     <FlatList
-      data={medListMock}
+      data={medList}
       renderItem={(item,index)=>(
         <ReportCard medicine={item}/>
       )}

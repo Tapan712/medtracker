@@ -4,9 +4,10 @@ import { Feather } from '@expo/vector-icons';
 import { timeConverter } from '../../utils/DateUtil';
 
 export default function ReportBody({dose}) {
+  console.log('dose:', dose?.status);
     const st = dose?.status;
-    const icon = st == null ? "alert-circle":st == "y" ?"check-circle":"x-circle"
-    const clr = st == null ? 'orange':st == "y" ?'green':'red'
+    const icon = st == null|| st == "null" ? "alert-circle":st == "y" ?"check-circle":"x-circle"
+    const clr = st == null || st == "null" ? 'orange':st == "y" ?'green':'red'
   return (
     <View style={styles.container}>
     <View style={styles.subcontainer}>

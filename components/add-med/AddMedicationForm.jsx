@@ -1,21 +1,76 @@
 import { View, Text, StyleSheet, TextInput, FlatList } from "react-native";
-import React, { useState } from "react";
+import React, { useContext,useState } from "react";
 import ServiceConstant from "../../constant/ServiceConstant";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import Colors from "../../constant/Colors";
 import { type, whenTotake } from "../../constant/Options";
 import { TouchableOpacity } from "react-native";
+import { MedListContext, DoseListContext, DbContext} from "../AppContext";
+import { fetchDoseStatusList } from "../../utils/MedUtils";
+import moment from "moment/moment";
 
 export default function AddMedicationForm() {
+  const {medList, setMedList} = useContext(MedListContext);
+  const {doseList, setDoseList} = useContext(DoseListContext);
   const [formData, setFormData] = useState();
+  const {dbObj, setDbObj} = useContext(DbContext);
   const onHandleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
 
-    console.log(formData);
   };
+
+  const saveMedication = async (formData) => {
+    if (!formData) {
+      alert(ServiceConstant.fillAllFields);
+      return;
+    }
+
+    const startDate = moment().format("MM-DD-YYYY");
+    const startTime = moment().format("HH:mm");
+    const endDate = moment().add(formData?.courseDuration, "days").format("MM-DD-YYYY");
+    const endTime = moment().add(formData?.timesPerDay * formData?.courseDuration * Math.floor(24/formData?.courseDuration) , "hours").format("HH:mm");
+    
+    const medQuery = "INSERT INTO med (name,type,dose,timesPerDay,whenTotake,startDate,startTime,endDate,endTime,courseDuration) VALUES ('"
+          +formData?.name+"','"
+          +formData?.type+"','"
+          +formData?.dose+"','"
+          +formData?.timesPerDay+"','"
+          +formData?.whenTotake+"','"
+          +startDate+"','" // Use current date as start date
+          +startTime+"','" // Use current time as start time
+          +endDate+"','" //End date is current date + course duration
+          +endTime+"','"//End time is current time + total hours based on course duration and times per day
+          +formData?.courseDuration+"');";
+          
+    
+    try {
+      await dbObj.execAsync(medQuery);
+      const lastMedId = await dbObj.getAllAsync(`SELECT MAX(mId) as lastId FROM med;`);
+      const doseList = fetchDoseStatusList(formData);
+      doseList.forEach((element) => {
+        const doseQuery = "INSERT INTO doseStatus (dSlNo, date,time,status,mId) VALUES ('"
+    +element?.dSlNo+"','"
+    +element?.date+"','" 
+    +element?.time+"','" 
+    +element?.status+"',"
+    +lastMedId[0]?.lastId+");";
+        dbObj.execAsync(doseQuery);
+      });
+      setMedList((prev) => [...prev, {...formData, mId: lastMedId[0]?.lastId, startDate: startDate,startTime:startTime,endDate:endDate,endTime:endTime}]);
+      setDoseList((prev) => [...prev, ...doseList.map((item) => ({...item, mId: lastMedId[0]?.lastId}))]);
+      console.log(medList);
+      console.log(doseList);
+      alert(ServiceConstant.medAddedSuccess);
+    } catch (error) {
+      console.error("Error saving medication:", error);
+      alert(ServiceConstant.medAddError);
+    }
+  };
+
+
   return (
     <View
       style={{
@@ -149,6 +204,7 @@ export default function AddMedicationForm() {
             marginTop:30
         }} 
        //add onpress here
+       onPress={() => saveMedication(formData)}
         >
             <Text style={{
                 textAlign:'center',
