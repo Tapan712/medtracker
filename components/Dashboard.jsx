@@ -40,7 +40,7 @@ export default function Dashboard() {
         style={{
           height: 260,
           width: "100%",
-          backgroundColor: "#e7e4cc",
+          backgroundColor: 'white',
           borderRadius: 8,
         }}
       />

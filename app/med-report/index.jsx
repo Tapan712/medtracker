@@ -4,6 +4,7 @@ import ReportHeader from '../../components/report-med/ReportHeader'
 import ReportBody from '../../components/report-med/ReportBody'
 import { DoseListContext,MedListContext, SelectMedContext } from '../../components/AppContext'
 import { use } from 'react'
+import { filterAndShortDose } from '../../utils/MedUtils'
 
 export default function MedicationReport() {
    const {selectedMed,setSelectedMed} = useContext(SelectMedContext);
@@ -25,7 +26,7 @@ export default function MedicationReport() {
     }}>
       <ReportHeader medicine={medList[selectedMed-1]}/>
       <FlatList
-      data={doseList}
+      data={filterAndShortDose(medList[selectedMed-1], doseList)}
       renderItem={(item,index)=>(
         <ReportBody dose={item?.item}/>
       )}

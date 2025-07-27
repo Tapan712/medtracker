@@ -19,7 +19,7 @@ export const fetchDoseStatusList = (formData) => {
   console.log(formData);
   for (let i = 0; i < noOfDoses; i++) {
     console.log(formData?.startDate+" "+formData?.startTime+":00");
-    const doseTimedate = startDateTimeMoment.add(i * timeDuration, "hours");
+    const doseTimedate = i==0 ? startDateTimeMoment.add(timeDuration, "hours") : moment(doseList[i - 1]?.date+" "+doseList[i - 1]?.time,"MM-DD-YYYY HH:mm").add(timeDuration, "hours");
     const doseTime = doseTimedate.format("HH:mm");
     const doseDate = doseTimedate.format("MM-DD-YYYY");
     doseList.push({
@@ -31,3 +31,9 @@ export const fetchDoseStatusList = (formData) => {
   }
   return doseList.length>0?doseList:null;
 }
+
+export const filterAndShortDose = (med,doseList) => {
+  if(!med || !doseList || doseList.length === 0) return null;
+  const filteredData = doseList.filter(item => item.mId === med?.mId);
+  if(filteredData.length === 0) return null;
+  return filteredData.sort((a, b) => a.dSlNo - b.dSlNo );}
